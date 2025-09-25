@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Medical Record - Doct-Spot{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-file-medical me-2"></i>Create Medical Record</h5>
+            </div>
+            <div class="card-body">
+                <!-- Appointment Info -->
+                <div class="alert alert-info">
+                    <h6 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Appointment Information</h6>
+                    <p class="mb-0">
+                        <strong>Patient:</strong> {{ appointment.patient.get_full_name|default:appointment.patient.username }}<br>
+                        <strong>Date:</strong> {{ appointment.date|date:"F d, Y" }}<br>
+                        <strong>Time:</strong> {{ appointment.time|time:"g:i A" }}<br>
+                        <strong>Status:</strong> {{ appointment.status }}
+                    </p>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.diagnosis.id_for_label }}" class="form-label">Diagnosis *</label>
+                        {{ form.diagnosis }}
+                        {% if form.diagnosis.errors %}
+                            <div class="text-danger">{{ form.diagnosis.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Enter the primary diagnosis for this appointment</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.treatment.id_for_label }}" class="form-label">Treatment *</label>
+                        {{ form.treatment }}
+                        {% if form.treatment.errors %}
+                            <div class="text-danger">{{ form.treatment.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Describe the treatment provided or recommended</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.prescription.id_for_label }}" class="form-label">Prescription</label>
+                        {{ form.prescription }}
+                        {% if form.prescription.errors %}
+                            <div class="text-danger">{{ form.prescription.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Prescription details if any medication is prescribed</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">Additional Notes</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger">{{ form.notes.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Any additional observations or recommendations</div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <h6 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Important</h6>
+                        <p class="mb-0">Creating a medical record will mark this appointment as completed. This action cannot be undone.</p>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'appointment_detail' appointment.id %}" class="btn btn-outline-secondary me-md-2">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Create Medical Record
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Patient Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-user me-2"></i>Patient Information</h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-user fa-3x text-muted"></i>
+                </div>
+                
+                <h6 class="text-center">{{ appointment.patient.get_full_name|default:appointment.patient.username }}</h6>
+                <p class="text-center text-muted small">{{ appointment.patient.email }}</p>
+                
+                <hr>
+                
+                <div class="mb-2">
+                    <strong>Appointment Date:</strong><br>
+                    <small class="text-muted">{{ appointment.date|date:"l, F d, Y" }}</small>
+                </div>
+                
+                <div class="mb-2">
+                    <strong>Appointment Time:</strong><br>
+                    <small class="text-muted">{{ appointment.time|time:"g:i A" }}</small>
+                </div>
+                
+                {% if appointment.notes %}
+                <div class="mb-2">
+                    <strong>Patient Notes:</strong><br>
+                    <small class="text-muted">{{ appointment.notes }}</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Guidelines -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Medical Record Guidelines</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled small mb-0">
+                    <li><i class="fas fa-check text-success me-2"></i>Be specific and detailed in diagnosis</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Include all treatment recommendations</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Note any follow-up requirements</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Use clear, professional language</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Include prescription details if applicable</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back Button -->
+<div class="mt-4">
+    <a href="{% url 'appointment_detail' appointment.id %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back to Appointment
+    </a>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}
+
+
+
+

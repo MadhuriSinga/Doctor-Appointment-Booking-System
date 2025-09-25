@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+
+{% block title %}Find Doctors - Doct-Spot{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-user-md me-2 text-primary"></i>Available Doctors</h2>
+    <a href="{% url 'patient_dashboard' %}" class="btn btn-outline-primary">
+        <i class="fas fa-calendar-alt me-2"></i>My Appointments
+    </a>
+</div>
+
+<!-- Search and Filter Form -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-search me-2"></i>Search & Filter Doctors</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label for="id_specialty" class="form-label">Specialty</label>
+                {{ search_form.specialty }}
+            </div>
+            <div class="col-md-3">
+                <label for="id_location" class="form-label">Location</label>
+                {{ search_form.location }}
+            </div>
+            <div class="col-md-2">
+                <label for="id_min_experience" class="form-label">Min Experience</label>
+                {{ search_form.min_experience }}
+            </div>
+            <div class="col-md-2">
+                <label for="id_max_fee" class="form-label">Max Fee</label>
+                {{ search_form.max_fee }}
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i>Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if doctors %}
+    <div class="row">
+        {% for doctor in doctors %}
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-header bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                <i class="fas fa-user-md fa-lg text-primary"></i>
+                            </div>
+                            <div>
+                                <h5 class="card-title mb-0">Dr. {{ doctor.user.get_full_name|default:doctor.user.username }}</h5>
+                                <small class="opacity-75">{{ doctor.specialty }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <h6 class="text-muted mb-1">
+                                    <i class="fas fa-stethoscope me-1"></i>Specialty
+                                </h6>
+                                <span class="badge bg-primary">{{ doctor.specialty }}</span>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-muted mb-1">
+                                    <i class="fas fa-map-marker-alt me-1"></i>Location
+                                </h6>
+                                <small class="text-muted">{{ doctor.location }}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <h6 class="text-muted mb-1">
+                                    <i class="fas fa-clock me-1"></i>Experience
+                                </h6>
+                                <small class="text-muted">{{ doctor.experience_years }} years</small>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="text-muted mb-1">
+                                    <i class="fas fa-dollar-sign me-1"></i>Consultation Fee
+                                </h6>
+                                <small class="text-muted">${{ doctor.consultation_fee }}</small>
+                            </div>
+                        </div>
+                        
+                        {% if doctor.bio %}
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-2">
+                                    <i class="fas fa-info-circle me-2"></i>About
+                                </h6>
+                                <p class="card-text small">{{ doctor.bio|truncatewords:20 }}</p>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle me-1"></i>Verified & Approved
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer bg-transparent border-0">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-eye me-1"></i>View Details
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="{% url 'book_appointment' doctor.id %}" class="btn btn-primary w-100">
+                                    <i class="fas fa-calendar-plus me-1"></i>Book Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if doctors.has_other_pages %}
+    <nav aria-label="Doctor pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if doctors.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if request.GET.specialty %}&specialty={{ request.GET.specialty }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}{% if request.GET.min_experience %}&min_experience={{ request.GET.min_experience }}{% endif %}{% if request.GET.max_fee %}&max_fee={{ request.GET.max_fee }}{% endif %}">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ doctors.previous_page_number }}{% if request.GET.specialty %}&specialty={{ request.GET.specialty }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}{% if request.GET.min_experience %}&min_experience={{ request.GET.min_experience }}{% endif %}{% if request.GET.max_fee %}&max_fee={{ request.GET.max_fee }}{% endif %}">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">
+                    Page {{ doctors.number }} of {{ doctors.paginator.num_pages }}
+                </span>
+            </li>
+            
+            {% if doctors.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ doctors.next_page_number }}{% if request.GET.specialty %}&specialty={{ request.GET.specialty }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}{% if request.GET.min_experience %}&min_experience={{ request.GET.min_experience }}{% endif %}{% if request.GET.max_fee %}&max_fee={{ request.GET.max_fee }}{% endif %}">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ doctors.paginator.num_pages }}{% if request.GET.specialty %}&specialty={{ request.GET.specialty }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}{% if request.GET.min_experience %}&min_experience={{ request.GET.min_experience }}{% endif %}{% if request.GET.max_fee %}&max_fee={{ request.GET.max_fee }}{% endif %}">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+    <div class="mt-4 p-3 bg-light rounded">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <i class="fas fa-clock fa-2x text-primary mb-2"></i>
+                <h6>Quick Booking</h6>
+                <small class="text-muted">Book appointments in seconds</small>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-shield-alt fa-2x text-success mb-2"></i>
+                <h6>Verified Doctors</h6>
+                <small class="text-muted">All doctors are professionally verified</small>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-bell fa-2x text-info mb-2"></i>
+                <h6>Instant Notifications</h6>
+                <small class="text-muted">Get email confirmations immediately</small>
+            </div>
+        </div>
+    </div>
+    
+{% else %}
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="fas fa-user-md-slash fa-5x text-muted"></i>
+        </div>
+        
+        <div class="alert alert-info d-inline-block">
+            <h4><i class="fas fa-info-circle me-2"></i>No Doctors Available</h4>
+            <p class="mb-3">There are currently no approved doctors available for booking.</p>
+            <p class="mb-0">This could mean:</p>
+            <ul class="list-unstyled mt-2">
+                <li><i class="fas fa-hourglass-half text-warning me-2"></i>New doctor registrations are pending approval</li>
+                <li><i class="fas fa-cog text-primary me-2"></i>System maintenance is in progress</li>
+                <li><i class="fas fa-clock text-info me-2"></i>Please check back later</li>
+            </ul>
+        </div>
+        
+        <div class="mt-4">
+            <a href="{% url 'home' %}" class="btn btn-primary me-2">
+                <i class="fas fa-home me-2"></i>Back to Home
+            </a>
+            <a href="{% url 'patient_dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-calendar-alt me-2"></i>View My Appointments
+            </a>
+        </div>
+    </div>
+{% endif %}
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+</style>
+{% endblock %}

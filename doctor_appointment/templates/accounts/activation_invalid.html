@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Activation Failed - Doct-Spot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body text-center p-5">
+                <div class="mb-4">
+                    <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
+                </div>
+                
+                <h2 class="text-danger mb-3">Activation Failed</h2>
+                
+                <div class="alert alert-danger">
+                    <h5><i class="fas fa-times-circle me-2"></i>Invalid Activation Link</h5>
+                    <p class="mb-0">The activation link you clicked is either invalid or has expired.</p>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>Possible reasons:</h5>
+                    <ul class="list-unstyled text-start">
+                        <li><i class="fas fa-clock text-warning me-2"></i>The link has expired (links are valid for 24 hours)</li>
+                        <li><i class="fas fa-link text-warning me-2"></i>The link was already used to activate the account</li>
+                        <li><i class="fas fa-exclamation text-warning me-2"></i>The link was copied incorrectly</li>
+                    </ul>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>What you can do:</h5>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'register_patient' %}" class="btn btn-success">
+                            <i class="fas fa-user-plus me-2"></i>Register Again as Patient
+                        </a>
+                        <a href="{% url 'register_doctor' %}" class="btn btn-info">
+                            <i class="fas fa-user-md me-2"></i>Register Again as Doctor
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Try to Login
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>Go to Homepage
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-3 bg-light rounded">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        If you continue to experience issues, please contact our support team.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

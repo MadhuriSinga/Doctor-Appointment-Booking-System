@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Appointment - Doct-Spot{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Update Appointment</h5>
+            </div>
+            <div class="card-body">
+                <!-- Appointment Info -->
+                <div class="alert alert-info">
+                    <h6 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Appointment Details</h6>
+                    <p class="mb-0">
+                        <strong>Patient:</strong> {{ appointment.patient.get_full_name|default:appointment.patient.username }}<br>
+                        <strong>Date:</strong> {{ appointment.date|date:"F d, Y" }}<br>
+                        <strong>Time:</strong> {{ appointment.time|time:"g:i A" }}
+                    </p>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <div class="text-danger">{{ form.status.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.doctor_notes.id_for_label }}" class="form-label">Doctor's Notes</label>
+                        {{ form.doctor_notes }}
+                        {% if form.doctor_notes.errors %}
+                            <div class="text-danger">{{ form.doctor_notes.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Your observations and notes about the appointment</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.prescription.id_for_label }}" class="form-label">Prescription</label>
+                        {{ form.prescription }}
+                        {% if form.prescription.errors %}
+                            <div class="text-danger">{{ form.prescription.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Prescription details if any medication is prescribed</div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    {{ form.follow_up_required }}
+                                    <label class="form-check-label" for="{{ form.follow_up_required.id_for_label }}">
+                                        Follow-up Required
+                                    </label>
+                                </div>
+                                {% if form.follow_up_required.errors %}
+                                    <div class="text-danger">{{ form.follow_up_required.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.follow_up_date.id_for_label }}" class="form-label">Follow-up Date</label>
+                                {{ form.follow_up_date }}
+                                {% if form.follow_up_date.errors %}
+                                    <div class="text-danger">{{ form.follow_up_date.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'appointment_detail' appointment.id %}" class="btn btn-outline-secondary me-md-2">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Update Appointment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-cogs me-2"></i>Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'appointment_detail' appointment.id %}" class="btn btn-outline-primary">
+                        <i class="fas fa-eye me-2"></i>View Details
+                    </a>
+                    {% if appointment.status == 'Confirmed' and not appointment.medical_records.exists %}
+                    <a href="{% url 'create_medical_record' appointment.id %}" class="btn btn-outline-success">
+                        <i class="fas fa-file-medical me-2"></i>Add Medical Record
+                    </a>
+                    {% endif %}
+                    {% if appointment.can_be_cancelled %}
+                    <a href="{% url 'cancel_appointment' appointment.id %}" class="btn btn-outline-danger" onclick="return confirm('Cancel this appointment?')">
+                        <i class="fas fa-times me-2"></i>Cancel Appointment
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Information -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Status Information</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6 class="text-muted mb-2">Current Status</h6>
+                    {% if appointment.status == 'Confirmed' %}
+                        <span class="badge bg-success fs-6"><i class="fas fa-check-circle me-1"></i>{{ appointment.status }}</span>
+                    {% elif appointment.status == 'Pending' %}
+                        <span class="badge bg-warning fs-6"><i class="fas fa-hourglass-half me-1"></i>{{ appointment.status }}</span>
+                    {% elif appointment.status == 'Cancelled' %}
+                        <span class="badge bg-danger fs-6"><i class="fas fa-times-circle me-1"></i>{{ appointment.status }}</span>
+                    {% elif appointment.status == 'Completed' %}
+                        <span class="badge bg-info fs-6"><i class="fas fa-check me-1"></i>{{ appointment.status }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <h6 class="text-muted mb-2">Appointment Date</h6>
+                    <p class="mb-0">{{ appointment.date|date:"l, F d, Y" }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6 class="text-muted mb-2">Appointment Time</h6>
+                    <p class="mb-0">{{ appointment.time|time:"g:i A" }}</p>
+                </div>
+                
+                {% if appointment.notes %}
+                <div class="mb-3">
+                    <h6 class="text-muted mb-2">Patient Notes</h6>
+                    <p class="mb-0 small">{{ appointment.notes }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back Button -->
+<div class="mt-4">
+    <a href="{% url 'doctor_dashboard' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}
+
+
+
+

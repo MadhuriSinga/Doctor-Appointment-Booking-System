@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Appointment - Doct-Spot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <!-- Doctor Info Header -->
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-user-md fa-2x text-primary"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-1">Dr. {{ doctor.user.get_full_name|default:doctor.user.username }}</h4>
+                        <p class="mb-0 opacity-75">
+                            <i class="fas fa-stethoscope me-2"></i>{{ doctor.specialty }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctor Details -->
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h6 class="text-muted mb-2">
+                            <i class="fas fa-info-circle me-2"></i>Doctor Information
+                        </h6>
+                        <div class="bg-light p-3 rounded">
+                            <p class="mb-2">
+                                <strong>Specialty:</strong>
+                                <span class="badge bg-primary">{{ doctor.specialty }}</span>
+                            </p>
+                            {% if doctor.bio %}
+                                <p class="mb-0">
+                                    <strong>About:</strong> {{ doctor.bio }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Form -->
+                <div class="border-top pt-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-calendar-plus me-2 text-success"></i>Book Your Appointment
+                    </h5>
+
+                    <form method="post" id="appointmentForm">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_date" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>Appointment Date *
+                                </label>
+                                {{ form.date }}
+                                {% if form.date.errors %}
+                                    <div class="text-danger small mt-1">{{ form.date.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">Select a future date for your appointment</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="id_time" class="form-label">
+                                    <i class="fas fa-clock me-1"></i>Appointment Time *
+                                </label>
+                                {{ form.time }}
+                                {% if form.time.errors %}
+                                    <div class="text-danger small mt-1">{{ form.time.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">Choose your preferred time</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_notes" class="form-label">
+                                <i class="fas fa-sticky-note me-1"></i>Additional Notes (Optional)
+                            </label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger small mt-1">{{ form.notes.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">Brief description of your health concern or reason for visit</div>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <!-- Booking Terms -->
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>Booking Information:</h6>
+                            <ul class="mb-0 small">
+                                <li>Your appointment status will initially be "Pending"</li>
+                                <li>You'll receive an email confirmation immediately</li>
+                                <li>The doctor will also be notified about your booking</li>
+                                <li>Please arrive 10 minutes before your scheduled time</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                <i class="fas fa-calendar-check me-2"></i>Confirm Booking
+                            </button>
+                            <a href="{% url 'doctor_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Doctors
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum date to today
+    const dateInput = document.getElementById('id_date');
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+    }
+
+    // Form submission handling
+    const form = document.getElementById('appointmentForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', function() {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Booking...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
+
+<style>
+.form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
+
+#id_date, #id_time {
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+#id_notes {
+    min-height: 100px;
+    resize: vertical;
+}
+</style>
+{% endblock %}

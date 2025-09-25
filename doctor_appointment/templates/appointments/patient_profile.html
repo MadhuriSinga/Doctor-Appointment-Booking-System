@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Doct-Spot{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user me-2"></i>Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">Date of Birth</label>
+                                {{ form.date_of_birth }}
+                                {% if form.date_of_birth.errors %}
+                                    <div class="text-danger">{{ form.date_of_birth.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.gender.id_for_label }}" class="form-label">Gender</label>
+                                {{ form.gender }}
+                                {% if form.gender.errors %}
+                                    <div class="text-danger">{{ form.gender.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.blood_type.id_for_label }}" class="form-label">Blood Type</label>
+                                {{ form.blood_type }}
+                                {% if form.blood_type.errors %}
+                                    <div class="text-danger">{{ form.blood_type.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone Number</label>
+                                {{ form.phone_number }}
+                                {% if form.phone_number.errors %}
+                                    <div class="text-danger">{{ form.phone_number.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.address.id_for_label }}" class="form-label">Address</label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                            <div class="text-danger">{{ form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.emergency_contact.id_for_label }}" class="form-label">Emergency Contact</label>
+                                {{ form.emergency_contact }}
+                                {% if form.emergency_contact.errors %}
+                                    <div class="text-danger">{{ form.emergency_contact.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.emergency_phone.id_for_label }}" class="form-label">Emergency Phone</label>
+                                {{ form.emergency_phone }}
+                                {% if form.emergency_phone.errors %}
+                                    <div class="text-danger">{{ form.emergency_phone.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Profile Picture</label>
+                        {{ form.profile_picture }}
+                        {% if form.profile_picture.errors %}
+                            <div class="text-danger">{{ form.profile_picture.errors }}</div>
+                        {% endif %}
+                        {% if patient_profile.profile_picture %}
+                            <div class="mt-2">
+                                <img src="{{ patient_profile.profile_picture.url }}" alt="Current profile picture" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Update Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Medical Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-heartbeat me-2"></i>Medical Information</h6>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.medical_history.id_for_label }}" class="form-label">Medical History</label>
+                        {{ form.medical_history }}
+                        {% if form.medical_history.errors %}
+                            <div class="text-danger">{{ form.medical_history.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Previous medical conditions, surgeries, etc.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.current_medications.id_for_label }}" class="form-label">Current Medications</label>
+                        {{ form.current_medications }}
+                        {% if form.current_medications.errors %}
+                            <div class="text-danger">{{ form.current_medications.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Current medications and dosages</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.allergies.id_for_label }}" class="form-label">Allergies</label>
+                        {{ form.allergies }}
+                        {% if form.allergies.errors %}
+                            <div class="text-danger">{{ form.allergies.errors }}</div>
+                        {% endif %}
+                        <div class="form-text">Known allergies</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Update Medical Info
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Profile Summary -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-user-circle me-2"></i>Profile Summary</h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    {% if patient_profile.profile_picture %}
+                        <img src="{{ patient_profile.profile_picture.url }}" alt="Profile picture" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
+                            <i class="fas fa-user fa-2x text-white"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <h6 class="text-center">{{ user.get_full_name|default:user.username }}</h6>
+                <p class="text-center text-muted small">{{ user.email }}</p>
+                
+                <hr>
+                
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h6 class="text-muted mb-1">Age</h6>
+                        <strong>
+                            {% if patient_profile.age %}
+                                {{ patient_profile.age }} years
+                            {% else %}
+                                Not set
+                            {% endif %}
+                        </strong>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="text-muted mb-1">Blood Type</h6>
+                        <strong>
+                            {% if patient_profile.blood_type %}
+                                {{ patient_profile.blood_type }}
+                            {% else %}
+                                Not set
+                            {% endif %}
+                        </strong>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="text-center">
+                    <small class="text-muted">
+                        Member since {{ user.date_joined|date:"M Y" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back Button -->
+<div class="mt-4">
+    <a href="{% url 'patient_dashboard' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}
+
+
+
+

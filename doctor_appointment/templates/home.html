@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded-3 text-center mb-5">
+    <h1 class="display-4">
+        <i class="fas fa-hospital-alt text-primary me-3"></i>Welcome to Doct-Spot
+    </h1>
+    <p class="lead"><b>Your health, our priority</b><br>
+Book appointments in seconds, stress-free.
+</p>
+
+    {% if not user.is_authenticated %}
+        <hr class="my-4">
+        <p>Get started by creating an account or logging in to access our services.</p>
+        <a class="btn btn-primary btn-lg me-2" href="{% url 'login' %}" role="button">
+            <i class="fas fa-sign-in-alt me-2"></i>Login
+        </a>
+        <a class="btn btn-success btn-lg" href="{% url 'register_patient' %}" role="button">
+            <i class="fas fa-user-plus me-2"></i>Register as Patient
+        </a>
+    {% elif user.is_patient %}
+        <hr class="my-4">
+        <p>Ready to book your next appointment?</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'doctor_list' %}" role="button">
+            <i class="fas fa-search me-2"></i>Find Doctors
+        </a>
+        <a class="btn btn-outline-primary btn-lg ms-2" href="{% url 'patient_dashboard' %}" role="button">
+            <i class="fas fa-calendar-alt me-2"></i>My Appointments
+        </a>
+    {% elif user.is_doctor %}
+        <hr class="my-4">
+        <p>Manage your appointments and schedule.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'doctor_dashboard' %}" role="button">
+            <i class="fas fa-calendar-check me-2"></i>View Schedule
+        </a>
+    {% endif %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-mouse-pointer fa-3x text-primary"></i>
+                </div>
+                <h5 class="card-title">Easy Booking</h5>
+                <p class="card-text">Book appointments with just a few clicks. No phone calls needed. Our intuitive interface makes scheduling simple and fast.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user-md fa-3x text-success"></i>
+                </div>
+                <h5 class="card-title">Qualified Doctors</h5>
+                <p class="card-text">All doctors are verified and approved by our medical board. Rest assured you're getting quality healthcare from certified professionals.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-envelope fa-3x text-info"></i>
+                </div>
+                <h5 class="card-title">Email Notifications</h5>
+                <p class="card-text">Get instant email confirmations and reminders for your appointments. Stay informed about all your healthcare scheduling.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6 mb-4">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i>For Patients</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Browse qualified doctors by specialty</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Book appointments online 24/7</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Manage your appointment history</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Receive email confirmations</li>
+                </ul>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'register_patient' %}" class="btn btn-primary">
+                        <i class="fas fa-user-plus me-2"></i>Register as Patient
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-user-md me-2"></i>For Doctors</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Manage your professional profile</li>
+                    <li><i class="fas fa-check text-success me-2"></i>View appointment schedules</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Receive patient booking notifications</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Easy appointment management</li>
+                </ul>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'register_doctor' %}" class="btn btn-success">
+                        <i class="fas fa-user-md me-2"></i>Register as Doctor
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
