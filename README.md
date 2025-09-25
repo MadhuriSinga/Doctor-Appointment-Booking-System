@@ -291,9 +291,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 For support and questions:
-- Email: support@docbook.com
-- Documentation: [Project Wiki]
-- Issues: [GitHub Issues]
+- Email: 224g1a0543@srit.ac.in
 
 ## Changelog
 
